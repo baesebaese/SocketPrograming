@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Net.WebSockets;
 
 namespace Server;
 
@@ -23,6 +24,12 @@ internal class Program
         //   최대 20개의 클라이언트 연결요청을 대기할 수 있다.
         serverSocket.Listen(20);
 
+        // 3. 대기실에서 연결 요청중인 클라이언트 중 하나에 연결요청을 수락
+        // 클라이언트와 데이터 통신을 위한 소켓을 만든다.
+        Socket clientSocket = serverSocket.Accept();
+
+        // 클라이언트 ip와 port 확인
+        Console.WriteLine("연결성공 : " + clientSocket.RemoteEndPoint);
 
     }
 }
