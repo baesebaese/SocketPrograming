@@ -24,24 +24,19 @@ namespace Client
                     }
 
                     // 메시지를 바이트 배열로 직렬화
-                    byte[] buffer = Encoding.UTF8.GetBytes(str);
+                    byte[] strBuffer = Encoding.UTF8.GetBytes(str);
 
+                    //데이터의 길이를 나타내주는 2바이트의 헤더 추가
+                    byte[] newBuffer = new byte[2 + strBuffer.Length];
+                    byte[] dataSize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)strBuffer.Length));
+
+                    Array.Copy(dataSize, 0, newBuffer, 0, dataSize.Length);
+
+                    Array.Copy(strBuffer, 0, newBuffer, 2, strBuffer.Length);
                     //서버에 데이터 전송
-                    socket.Send(buffer);
-
-                    byte[] buffer2 = new byte[1024];
-                    int bytesRead = socket.Receive(buffer2);
-
-                    //1바이트 미만을 받으면 서버가 접속종료한 것으로 판단
-                    if (bytesRead < 1) {
-                        Console.WriteLine("서버 연결 종료");
-                    }
-
-                    string str2 = Encoding.UTF8.GetString(buffer2);
-                    Console.WriteLine("보낸 메시지: " + str2);
+                    socket.Send(newBuffer);
                 }
             }
         }
-
     }
 }

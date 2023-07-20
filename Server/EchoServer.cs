@@ -22,24 +22,35 @@ namespace Server
                     Console.WriteLine(clientSocket.RemoteEndPoint);
 
                     while (true) {
-                        byte[] buffer = new byte[1024];
-                        // 클라이언트에서 전송한 데이터를 받는다. 
-                        int totalBytes = clientSocket.Receive(buffer);
+                        byte[] headerBuffer = new byte[2];
+                        int n1 = clientSocket.Receive(headerBuffer);
 
                         //반환값이 없으면 클라이언트가 연결을 종료했다고 판단
-                        if (totalBytes < 1) {
+                        if (n1 < 1) {
                             Console.WriteLine("클라이언트 연결 종료");
                             return;
                         }
+                        else if (n1 == 1) {
+                            clientSocket.Receive(headerBuffer, 1, 1, SocketFlags.None);
+                        }
+
+                        short dataSize = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(headerBuffer));
+                        byte[] dataBuffer = new byte[dataSize];
+
+                        int totalRecv = 0;
+
+                        while (totalRecv < dataSize) {
+                            int n2 = clientSocket.Receive(dataBuffer, totalRecv, dataSize - totalRecv, SocketFlags.None);
+                            totalRecv += n2;
+
+                        }
 
                         //받은 데이터 역직렬화
-                        string str = Encoding.UTF8.GetString(buffer);
+                        string str = Encoding.UTF8.GetString(dataBuffer);
                         Console.WriteLine("받은 메시지: " + str);
-
-                        //클라이언트에게 받은 메시지를 재전송
-                        clientSocket.Send(buffer);
                     }
                 }
+                
             }       
         }
     }
