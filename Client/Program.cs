@@ -9,6 +9,6 @@ internal class Program
     {
 
         //ClientSocket.CreateClientSocket();
-        EchoClient.CreateEchoClient();
+        //EchoClient.CreateEchoClient();
     }
 }

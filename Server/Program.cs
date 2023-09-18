@@ -10,6 +10,7 @@ internal class Program
     static void Main(string[] args) 
     {
         // ServerSocket.CreateServerSocket();
-        EchoServer.CreateEchoServer();
+        //EchoServer.CreateEchoServer();
+        MultiThread.RunWithThread();
     }
 }
