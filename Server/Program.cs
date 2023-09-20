@@ -11,6 +11,8 @@ internal class Program
     {
         // ServerSocket.CreateServerSocket();
         //EchoServer.CreateEchoServer();
-        MultiThread.RunWithThread();
+        //MultiThread.RunWithThread();
+        ThreadAsync.ThreadAsyncRun();
+
     }
 }
